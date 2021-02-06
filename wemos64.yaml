@@ -1,0 +1,297 @@
+esphome:
+  name: wemo64
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Wemo64 Fallback Hotspot"
+    password: "tKpEBIzYspuk"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+web_server:
+  port: 80
+ota:
+
+i2c:
+  sda: D2
+  scl: D1
+  scan: True
+  id: bus_b
+
+
+mcp23017:
+  - id: 'mcp23017_a'
+    address: 0x21
+  - id: 'mcp23017_b'
+    address: 0x24
+
+
+# it is possible to install a dallad temperature sensor on board.
+#dallas:
+#  - pin: D5
+
+# Individual sensors
+
+
+#sensor:
+#  - platform: dallas
+#    address: 0x2A011871F0D1FF28
+#    name: "LH Temperature"    
+#    id: lh_temp
+
+ 
+   
+binary_sensor:
+# Ports 1-4
+  - platform: gpio
+    name: "porta pin 0"
+    pin:
+      mcp23017: mcp23017_a
+      number: 0
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 1"
+    pin:
+      mcp23017: mcp23017_a
+      number: 1
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 2"
+    pin:
+      mcp23017: mcp23017_a
+      number: 2
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 3"
+    pin:
+      mcp23017: mcp23017_a
+      number: 3
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 4"
+    pin:
+      mcp23017: mcp23017_a
+      number: 4
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 5"
+    pin:
+      mcp23017: mcp23017_a
+      number: 5
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 6"
+    pin:
+      mcp23017: mcp23017_a
+      number: 6
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 7"
+    pin:
+      mcp23017: mcp23017_a
+      number: 7
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 8"
+    pin:
+      mcp23017: mcp23017_a
+      number: 8
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 9"
+    pin:
+      mcp23017: mcp23017_a
+      number: 9
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 10"
+    pin:
+      mcp23017: mcp23017_a
+      number: 10
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 11"
+    pin:
+      mcp23017: mcp23017_a
+      number: 11
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 12"
+    pin:
+      mcp23017: mcp23017_a
+      number: 12
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 13"
+    pin:
+      mcp23017: mcp23017_a
+      number: 13
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 14"
+    pin:
+      mcp23017: mcp23017_a
+      number: 14
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "porta pin 15"
+    pin:
+      mcp23017: mcp23017_a
+      number: 15
+      mode: INPUT_PULLUP
+      inverted: False
+# Ports 5-8
+  - platform: gpio
+    name: "portb pin 0"
+    pin:
+      mcp23017: mcp23017_b
+      number: 0
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 1"
+    pin:
+      mcp23017: mcp23017_b
+      number: 1
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 2"
+    pin:
+      mcp23017: mcp23017_b
+      number: 2
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 3"
+    pin:
+      mcp23017: mcp23017_b
+      number: 3
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 4"
+    pin:
+      mcp23017: mcp23017_b
+      number: 4
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 5"
+    pin:
+      mcp23017: mcp23017_b
+      number: 5
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 6"
+    pin:
+      mcp23017: mcp23017_b
+      number: 6
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 7"
+    pin:
+      mcp23017: mcp23017_b
+      number: 7
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 8"
+    pin:
+      mcp23017: mcp23017_b
+      number: 8
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 9"
+    pin:
+      mcp23017: mcp23017_b
+      number: 9
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 10"
+    pin:
+      mcp23017: mcp23017_b
+      number: 10
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 11"
+    pin:
+      mcp23017: mcp23017_b
+      number: 11
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 12"
+    pin:
+      mcp23017: mcp23017_b
+      number: 12
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 13"
+    pin:
+      mcp23017: mcp23017_b
+      number: 13
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 14"
+    pin:
+      mcp23017: mcp23017_b
+      number: 14
+      mode: INPUT_PULLUP
+      inverted: False
+  - platform: gpio
+    name: "portb pin 15"
+    pin:
+      mcp23017: mcp23017_b
+      number: 15
+      mode: INPUT_PULLUP
+      inverted: False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
