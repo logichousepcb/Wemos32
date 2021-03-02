@@ -1,6 +1,8 @@
 /* Here is example yaml to add to Home Assistant to read the address and state of the sensors
+
    
 binary_sensor:
+
   - platform: mqtt
     name: "test front door"
     payload_on: "ON"
@@ -8,15 +10,27 @@ binary_sensor:
     device_class: door
     state_topic: "Rack64/sensorout/0x215"
     value_template: '{{ value_json.state }}'  
+  - platform: mqtt
+    name: "Panel Status"
+    payload_on: "Online"
+    payload_off: "Offline"
+    device_class: connectivity
+    state_topic: "Rack64/checkIn"
+    value_template: '{{ value_json.state }}' 
+    qos: 1
+    retain: true   
  sensor:
   - platform: mqtt
     name: "Alarm Temperature"
     state_topic: "Rack64/temp"
     unit_of_measurement: '°F'
     value_template: "{{ value_json }}"
+  
 **********************************************
 
 03022021- Added temp sensor support
+          Added LWT support (Online/Offline)
+          
 */
 #include <SimpleTimer.h>    //https://github.com/marcelloromani/Arduino-SimpleTimer/tree/master/SimpleTimer
 #include <ESP8266WiFi.h>    //if you get an error here you need to install the ESP8266 board manager 
@@ -115,7 +129,10 @@ const char *mqtt_user = USER_MQTT_USERNAME ;
 const char *mqtt_pass = USER_MQTT_PASSWORD ;
 const char *mqtt_client_name = USER_MQTT_CLIENT_NAME ; 
 const int bouncedelay = 150;  // THIS IS A DELAY TO TRY AND PREVENT DOUBLE PRESS OR SENSOR BOUNCE - PROBABLY A BETTER WAY 
-
+byte willQoS = 0;
+const char* willTopic = USER_MQTT_CLIENT_NAME"/checkIn";
+const char* willMessage = "Offline";
+boolean willRetain = true;
  
 int i;
 
@@ -209,7 +226,7 @@ void reconnect()
       display.setTextSize(1.75);
       display.println("Connecting MQTT...");
       display.display();
-      if (client.connect(mqtt_client_name, mqtt_user, mqtt_pass)) 
+      if (client.connect(mqtt_client_name, mqtt_user, mqtt_pass, willTopic, willQoS, willRetain, willMessage)) 
       {
         Serial.println("connected");
         display.println("connected!");
@@ -228,7 +245,7 @@ void reconnect()
         }
         if(boot == true)
         {
-          client.publish(USER_MQTT_CLIENT_NAME"/checkIn","Rebooted");
+          client.publish(USER_MQTT_CLIENT_NAME"/checkIn","Online");
         }
         // ... and resubscribe
         client.subscribe(USER_MQTT_CLIENT_NAME"/sensorin");
@@ -304,7 +321,7 @@ void callback(char* topic, byte* payload, unsigned int length)
 
 void checkIn()
 {
-  client.publish(USER_MQTT_CLIENT_NAME"/checkIn","OK"); 
+  client.publish(USER_MQTT_CLIENT_NAME"/checkIn","Online"); 
 }
 
 void sensorPub(char *chipname,int n,int v,int k)
