@@ -30,8 +30,9 @@ binary_sensor:
     value_template: "{{ value_json }}"
 ***********************************    
 *    1.3 added relay GPIO5 and control via MQTT
-*        2.24.21 Add renew function on receipt of '9' on sensorin topic
+*        2.24.21 Add renew function on receipt of '9' on sensorin topic - REPLACED 03032021
 *        3.2.21  Add support for LWT to display panel status
+*        03032021- Added RESET to cmnd topic and ability to add on outputs
 */
 #include <SimpleTimer.h>    //https://github.com/marcelloromani/Arduino-SimpleTimer/tree/master/SimpleTimer
 #include <ETH.h>    //if you get an error here you need to install the ESP8266 board manager 
@@ -63,7 +64,7 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 //Version number
-#define CURR_VERS                 "1.3e32"
+#define CURR_VERS                 "1.31e32"
 // NETWORK
 // Defines for Modtronix esp32MX-E board
 #define ETH_ADDR      0
@@ -144,7 +145,9 @@ byte willQoS = 0;
 const char* willTopic = USER_MQTT_CLIENT_NAME"/checkIn";
 const char* willMessage = "Offline";
 boolean willRetain = true;
- 
+/***************************** for recieved msg ***************************/
+char* reportTopic = USER_MQTT_CLIENT_NAME"/lastcmnd";
+char* reedTopic = USER_MQTT_CLIENT_NAME"/cmnd"; 
 int i;
 
 
@@ -267,6 +270,7 @@ void mcp_renew() {
     mcp1buff[pina] = mcp1.digitalRead(pina);
    }  
 }
+
 void setup_mcp() { 
   Wire.begin(I2C_SDA,I2C_SCL);  
   mcp1.begin(4);
@@ -300,6 +304,7 @@ void reconnect()
         if(boot == false)
         {
           client.publish(USER_MQTT_CLIENT_NAME"/checkIn","Reconnected"); 
+          client.publish(reportTopic,"Reconnected"); 
         }
         if(boot == true)
         {
@@ -307,7 +312,8 @@ void reconnect()
         }
         // ... and resubscribe
         client.subscribe(USER_MQTT_CLIENT_NAME"/sensorin");
-//        client.subscribe(USER_MQTT_CLIENT_NAME"/LHCommand");
+        client.subscribe(reportTopic);
+        client.subscribe(reedTopic);
       } 
       else 
       {
@@ -348,70 +354,42 @@ void report_to_display(char *imtelling,char *sttop,int d) {
   display.display(); 
 }
 
-void callback(char* topic, byte* payload, unsigned int length) 
 // HANDLING MQTT INPUT NOT YET ADDRESSED BUT THIS SECTION IS WHERE TO START TO DO IT
-{ 
-  int u;
-  char relaytopic[50];
-  strcpy(relaytopic,USER_MQTT_CLIENT_NAME);
-  strcat(relaytopic,"/sensorin");
-                            
-  Serial.print("Message arrived [");
-  String newTopic = relaytopic;
-  Serial.print(relaytopic);
-  Serial.print("] ");
-  payload[length] = '\0';
-  String newPayload = String((char *)payload);
-  int intPayload = newPayload.toInt();
-  
-  newPayload.toCharArray(charPayload, newPayload.length() + 1);
-  for (int u = 0; u < length; u++) {
-    Serial.print((char)newPayload[u]);
-  }
-
-    
-    if (newTopic == USER_MQTT_CLIENT_NAME"/sensorin") 
-  {
-/*    if (newPayload[0] == '1')
-    {
-      Serial.println (" TURNING PI ON!");
-      digitalWrite(5, HIGH);
-    }
-    else if (newPayload[0] == '0')
-    {   
-      digitalWrite(5, LOW);
-//      client.publish(USER_MQTT_CLIENT_NAME"/RelayCommand", charPayload, true);
-      Serial.println (" TURNING PI OFF!");
-    }*/
-   switch ((char)payload[0]) {
-   case '0':
-     Serial.println (" TURNING PI OFF!");
-     digitalWrite(5, LOW);
-//     client.publish(USER_MQTT_CLIENT_NAME"/sensorrepeat","RELAY 1 OFF");
-//     report_to_display(' TURNING PI OFF!',newTopic,0); 
-     break;
-   case '1':
-     Serial.println (" TURNING PI ON!");
-     digitalWrite(5, HIGH);
-//     client.publish(USER_MQTT_CLIENT_NAME"/sensorrepeat","RELAY 1 ON");
-//     report_to_display(' TURNING PI ON!',newTopic,0); 
-     break;
-    case '9':
-      Serial.println (" Renew GPIO ralues!");
-      mcp_renew();
-      report_all_states();
-//     report_to_display(' renew gpio!',newTopic,0); 
-//     client.publish(USER_MQTT_CLIENT_NAME"/sensorrepeat","RESET");
-     break;
-     
-   default:
-       Serial.println("Unknown MQTT request......");
-//     report_to_display(' unknown MQTT command!',newTopic,0); 
-     break;
-  }
-  }
+void callback(char* reedTopic, byte* payload, unsigned int length) {
+ Serial.print("Message arrived [");
+ Serial.print(reedTopic);
+ Serial.print("] ");
+  for (int i=0;i<length;i++) {
+    Serial.print((char)payload[i]);
  }
+  Serial.println();
+  payload[length] = '\0';
+  String message = (char*)payload;
 
+  if(message == "RESET"){
+    Serial.println("Resetting ESP");
+    client.publish(reportTopic,"Reset ESP"); 
+    ESP.restart();
+    while(message != "RESET"){
+      break;
+    }
+  } 
+  if(message == "RESCAN"){
+    Serial.println("Rescanning MCP Bus");
+    client.publish(reportTopic,"Rescanning MCP Bus"); 
+    mcp_renew();
+    while(message != "RESCAN"){
+      break;
+    }
+  } 
+  if(message == "OFF"){
+    client.publish(reportTopic, "Off recieved");
+    delay(2000);
+    while(message != "OFF"){
+      break;
+    }
+  }
+}
 
 
 void checkIn()
@@ -559,7 +537,7 @@ void BME_temp() {
     Serial.print("Temperature: ");
     Serial.println(tempString);
     client.publish(USER_MQTT_CLIENT_NAME"/temp", tempString);
-
+    client.publish(USER_MQTT_CLIENT_NAME"/checkIn","Online");
     humidity = bme.readHumidity();
     
     // Convert the value to a char array
@@ -582,7 +560,7 @@ void rack_temp(){
   char tempString[8];
   dtostrf(sensors.getTempCByIndex(0), 1, 2, tempString);
   client.publish(USER_MQTT_CLIENT_NAME"/temp",tempString);
-  
+  client.publish(USER_MQTT_CLIENT_NAME"/checkIn","Online");
   }      
     // Convert the value to a char array
  //   char tempString[8];
