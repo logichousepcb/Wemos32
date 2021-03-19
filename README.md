@@ -8,4 +8,5 @@ There is a USB passthrough that you can connect the ESP to so the USB port is ex
 
 If you would like one of these, contact logixpcb@gmail.com
 
-** Version 1.6 - I merged the 16 port and higher along with ESP32/ESP8266 Wifi/LAN support all in one code base.  The extended secrets file needs to be included in this version. 
+** Version 1.6 (03/19/2021) - I merged the 16 port and higher along with ESP32/ESP8266 Wifi/LAN support all in one code base.  The extended secrets file needs to be included in this version. 
+I have added some support for output to control relays to tinker with.  My goal is Version 2 will have output control.
