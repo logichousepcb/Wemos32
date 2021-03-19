@@ -108,7 +108,8 @@ bool boot = true;
 char sensorPublish[50];
 char charPayload[50];
 char * portName[16] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"};
-char * mcpName[9] = {"ExERR", "0x020", "0x021", "0x022", "0x023", "0x024", "0x025", "0x026", "0x027"};
+// char * mcpName[9] = {"ExERR", "0x020", "0x021", "0x022", "0x023", "0x024", "0x025", "0x026", "0x027"};
+char * mcpName[9] = {"ExER", "0x20", "0x21", "0x22", "0x23", "0x24", "0x25", "0x26", "0x27"};
 char * stateme[2] = {"OFF", "ON"};  // CHANGE TO OPEN OR CLOSE IF YOU LIKE
 int pina;
 //Create a buffer to hold value for each chip
