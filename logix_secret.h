@@ -7,6 +7,32 @@
 #define USER_MQTT_CLIENT_NAME     "Rack64"         // Used to define MQTT topics, MQTT Client ID, and ArduinoOTA
 #define TEMP_PRESENT               1  // 1 for ds19b20 present, 0 for none
 #define BME_PRESENT                0  //1 for present on i2c, 0 if not
+
+/******************** ON BOARD SENSORS *********************************/
+#define TEMP_PRESENT               0  // 1 for ds19b20 present, 0 for none
+#define BME_PRESENT                0  //1 for present on i2c, 0 if not
+
+
+/******************** I2C CONFIG SECTION *********************************/
+// 17, 16 for esp32mx-e  or 4, 5 for Wemos or 14, 15 doe WT32-ETH01 
+// #define I2C_SDA 4
+//#define I2C_SCL 5
+// THIS IS NOW AT THE TOP OF THE CODE DEFINED BY BOARD TYPE
+/******************** ETHERNET CONFIG SECTION *********************************/
+#define ETH_ADDR      0      // 1 for WT32-ETH01?, 0 for MXE
+#define ETH_POWER_PIN -1    // There is no power pin, use -1 to disable the code (16 foe WT32-ETH01)
+#define ETH_MDC_PIN   23
+#define ETH_MDIO_PIN  18
+#define ETH_TYPE      ETH_PHY_LAN8720
+#ifdef ETH_CLK_MODE
+#undef ETH_CLK_MODE
+#endif
+#define ETH_CLK_MODE ETH_CLOCK_GPIO0_OUT  //GPIO0_IN for WT32-ETH01, GPIO0_OUT for MXE
+
+/******************** OLED CONFIG SECTION *********************************/
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
 /******************** CHIP CONFIG SECTION *********************************/
 
 #define MCP0_PRESENT               1            // 1 FOR PRESENT AND 0 FOR NOT
