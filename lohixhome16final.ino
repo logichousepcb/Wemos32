@@ -69,6 +69,7 @@ binary_sensor:
 #include <DallasTemperature.h>
 #include <Adafruit_BME280.h>
 #include <Adafruit_Sensor.h>
+
 /*****************  START USER CONFIG SECTION *********************************/
 
 /********************************************************************/
@@ -108,7 +109,6 @@ bool boot = true;
 char sensorPublish[50];
 char charPayload[50];
 char * portName[16] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"};
-// char * mcpName[9] = {"ExERR", "0x020", "0x021", "0x022", "0x023", "0x024", "0x025", "0x026", "0x027"};
 char * mcpName[9] = {"ExER", "0x20", "0x21", "0x22", "0x23", "0x24", "0x25", "0x26", "0x27"};
 char * stateme[2] = {"OFF", "ON"};  // CHANGE TO OPEN OR CLOSE IF YOU LIKE
 int pina;
@@ -493,7 +493,8 @@ void setup() {
     setup_wifi();
   } else if (BOARDNAME == "esp32"){
  //   WiFi.onEvent(handleEvent);
-    ETH.begin(ETH_ADDR, ETH_POWER_PIN, ETH_MDC_PIN, ETH_MDIO_PIN, ETH_TYPE, ETH_CLK_MODE); 
+#ifdef defined(ESP32) ETH.begin(ETH_ADDR, ETH_POWER_PIN, ETH_MDC_PIN, ETH_MDIO_PIN, ETH_TYPE, ETH_CLK_MODE); 
+#endif
   }
   
   client.setServer(mqtt_server, mqtt_port);
@@ -545,7 +546,7 @@ void report_all_states(){
 long lastMsgb = 0;
 void BME_temp() {
   long now = millis();
-  if (now - lastMsgb > 600000) {
+  if (now - lastMsgb > 60000) {
     lastMsgb = now;
     
     // Temperature in Celsius
@@ -577,7 +578,7 @@ void BME_temp() {
 long lastMsg = 0;
 void rack_temp(){
   long now = millis();
-  if (now - lastMsg > 600000) {
+  if (now - lastMsg > 60000) {
     lastMsg = now;
   sensors.requestTemperatures(); // Send the command to get temperature readings 
   Serial.print("Temperature is: "); 
