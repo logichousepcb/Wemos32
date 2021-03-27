@@ -493,8 +493,8 @@ void setup() {
     setup_wifi();
   } else if (BOARDNAME == "esp32"){
  //   WiFi.onEvent(handleEvent);
-#ifdef defined(ESP32) ETH.begin(ETH_ADDR, ETH_POWER_PIN, ETH_MDC_PIN, ETH_MDIO_PIN, ETH_TYPE, ETH_CLK_MODE); 
-#endif
+//ETH.begin(ETH_ADDR, ETH_POWER_PIN, ETH_MDC_PIN, ETH_MDIO_PIN, ETH_TYPE, ETH_CLK_MODE);   // uncomment this if using esp32 with ethernet
+//
   }
   
   client.setServer(mqtt_server, mqtt_port);
