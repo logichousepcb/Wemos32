@@ -1,5 +1,5 @@
 /* AUTO DISCOVERY FOR HOME ASSISTANT NOW AVAILABLE
-
+***************** YOU MUST HAVE configfile.h IN YOUR DIRECTORY GOING FORWARD WHICH REPLEASE THE OLD SECRETS FILE  ********
  sensor:
   - platform: mqtt
     name: "Alarm Temperature"
@@ -46,7 +46,7 @@
 #include <Adafruit_GFX.h>
 #include <ArduinoJson.h>
 #include <Adafruit_SSD1306.h>
-#include "logix_secret.h"
+#include "configfile.h"
 #include "Adafruit_MCP23017.h"
 #include <OneWire.h> 
 #include <DallasTemperature.h>
@@ -230,9 +230,7 @@ void setup_mcp() {
     for (i = 0; i<16; i++) {
     mcp0.pinMode(i, MCP0_FUNCTION);
     if (MCP0_FUNCTION == INPUT) {mcp0.pullUp(i, HIGH); mcp0buff[i] = mcp0.digitalRead(i);
-      Serial.print ("Auto discovering --->");
-      Serial.println (mcpName[MCP0_ADDRESS+1]);
-      AD_entity(mcpName[MCP0_ADDRESS+1],i);}   
+        AD_entity(mcpName[MCP0_ADDRESS+1],i);}   
     }   
   }
   if (MCP1_PRESENT) {
@@ -613,11 +611,12 @@ void setup() {
     strcpy (tempid,USER_MQTT_CLIENT_NAME);        // TEMPERATURE AUTI DISCOVERY NOT RESOLVED
     strcat (tempid,"_TEMPERATURE");
     StaticJsonDocument<256> tempdoc;
-    tempdoc["unique_id"] = tempid;
+ //   tempdoc["unique_id"] = tempid;
     tempdoc["name"] = tempid;
-    tempdoc["device_class"] = "thermometer";
-    tempdoc["topic"] = tempstate;
+    tempdoc["device_class"] = "temperature";
+//    tempdoc["topic"] = tempstate;
     tempdoc["platform"] = "mqtt";
+//    tempdoc["unit_of_measure"] = "°C";
     tempdoc["state_topic"] = tempstate;
     tempdoc["value_template"] = "{{value_json}}";
     char tempbuffer[256];
