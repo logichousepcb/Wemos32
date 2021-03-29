@@ -10,3 +10,5 @@ If you would like one of these, contact logixpcb@gmail.com
 
 ** Version 1.6 (03/19/2021) - I merged the 16 port and higher along with ESP32/ESP8266 Wifi/LAN support all in one code base.  The extended secrets file needs to be included in this version. 
 I have added some support for output to control relays to tinker with.  My goal is Version 2 will have output control.
+
+** Version 1.65 (03/29/2021) - Working auto discovery with the binary sensors.  This will change the MQTT output from the previous format.  If you chose to use this, you will have to update your entities in Home Assistant.  You will also have to update your config file as I have change some variables from digits to boolean.  Temperature auto discovery for HA is next on the agenda.
