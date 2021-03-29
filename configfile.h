@@ -1,10 +1,9 @@
-/******************** NETWORD/MQTT CONFIG SECTION *********************************/
-#define USER_SSID                 "ESP"
-#define USER_PASSWORD             "doodlehead"
-#define USER_MQTT_SERVER          "192.168.1.130"
+#define USER_SSID                 "YOUR SSID"
+#define USER_PASSWORD             "YOUR PASSWORD"
+#define USER_MQTT_SERVER          "192.168.1.130"    // YOUR MQTT SERVER
 #define USER_MQTT_PORT            1883
-#define USER_MQTT_USERNAME        "esp"
-#define USER_MQTT_PASSWORD        "doodlehead"
+#define USER_MQTT_USERNAME        "YOUR MQTT USERNAME"
+#define USER_MQTT_PASSWORD        "YOUR MQTT USERNAME"
 #define USER_MQTT_CLIENT_NAME     "TestUnit64"         // Used to define MQTT topics, MQTT Client ID, and ArduinoOTA
 #define USER_MQTT_DISCOVERY_PREFIX "homeassistant"
 // INSIDE YOUR PUBSUB INCREASE BUFFER SIZE
