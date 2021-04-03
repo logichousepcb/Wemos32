@@ -340,7 +340,7 @@ void report_to_display(char *imtelling,char *sttop,int d) {
   display.println("Sending states-MQTT");   
   } else {
     display.println(sttop); //passes the topic
-    display.setCursor(0,50); // forces down a line in case topic is long
+    display.setCursor(0,55); // forces down a line in case topic is long
   }
   display.println(imtelling); 
   display.display(); 
